@@ -15,6 +15,10 @@
 @section('content')
     {!! strip_tags($post->text, env('PERMITTED_TAGS', '')) !!}
 
+    <div class="text-end">
+        <a href="{{ route('post.edit', $post->id) }}">Edit</a>
+    </div>
+
     <hr>
 
     @foreach ($post->comments as $comment)

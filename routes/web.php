@@ -10,5 +10,4 @@ Route::resource('post', PostController::class);
 
 Route::post('/post/{post}/comment', [PostController::class , 'storeComment'])->name('post.comment');
 
-
 Route::resource('comment', CommentController::class);

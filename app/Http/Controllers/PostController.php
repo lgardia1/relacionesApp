@@ -56,8 +56,9 @@ class PostController extends Controller
     public function show($id)
     {
         //retora
-        if(Post::find($id)){
-            return view('post.show', ['post' =>Post::find($id)]);
+        $post = Post::find($id);
+        if($post){
+            return view('post.show', ['post' => $post]);
         }
         abort(404);
     }
@@ -68,6 +69,7 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         //retorna de view de vista balde de un post
+        return view('post.edit', ['post' => $post]);
     }
 
     /**
@@ -76,6 +78,22 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         //validate y try catch con update
+        $validated = $request->validate([
+            'title' => 'required|string|min:25|max:60|unique:posts,title,' . $post->id,
+            'entry' => 'required|string|min:60|max:250|unique:posts,entry,' . $post->id,
+            'text' => 'required|string|min:100'
+        ]);
+
+        try {   
+            $post->update($validated);
+            
+            /*$post->fill($validated);
+            $post->save(); */
+
+            return redirect('/post/' . $post->id)->with(['message' => 'La noticia ha sido actualizada']);
+        }catch(\Exception $e) {
+            return back()->withInput()->withErrors(['message' => $e->getMessage()]);
+        }
     }
 
     /**
